@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -11,16 +13,12 @@ def generate_data(N, epsilon, x_range=(0, 100)):
     return x, y
 
 
-N = 10
-
-x, y = generate_data(N)
-
-
-epochs = 10
-
-
-def train(epoch, x, y):
-    model = RegressionModel()
+def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio):
+    model = RegressionModel(
+        hidden_layer1=hidden_layer1,
+        hidden_layer2=hidden_layer2,
+        dropout_ratio=dropout_ratio,
+    )
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.00001)
 
@@ -33,3 +31,27 @@ def train(epoch, x, y):
 
         if (epoch + 1) % 100 == 0:
             print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+
+
+def main(
+    N: int,
+    epsilon: float,
+    x_range,
+    epochs: int,
+    hidden_layer1: int,
+    hidden_layer2: int,
+    dropout_ratio: float,
+):
+    x, y = generate_data(N=N, epsilon=epsilon, x_range=x_range)
+    train(
+        x=x,
+        y=y,
+        epochs=epochs,
+        hidden_layer1=hidden_layer1,
+        hidden_layer2=hidden_layer2,
+        dropout_ratio=dropout_ratio,
+    )
+
+
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
