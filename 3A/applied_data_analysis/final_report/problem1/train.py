@@ -13,14 +13,14 @@ def generate_data(N, epsilon, x_range=(0, 100)):
     return x, y
 
 
-def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio):
+def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
     model = RegressionModel(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
         dropout_ratio=dropout_ratio,
     )
     criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.00001)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
     for epoch in range(epochs):
         optimizer.zero_grad()
@@ -41,6 +41,7 @@ def main(
     hidden_layer1: int,
     hidden_layer2: int,
     dropout_ratio: float,
+    lr: float,
 ):
     x, y = generate_data(N=N, epsilon=epsilon, x_range=x_range)
     train(
@@ -50,8 +51,18 @@ def main(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
         dropout_ratio=dropout_ratio,
+        lr=lr,
     )
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    main(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+        sys.argv[8],
+    )
