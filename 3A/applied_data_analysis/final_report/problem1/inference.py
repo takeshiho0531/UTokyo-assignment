@@ -34,5 +34,6 @@ def inference_wrapper(
     x_inference = (
         torch.FloatTensor(inf_N).uniform_(x_range_from, x_range_to).unsqueeze(1)
     )
-    y_pred = inference(model, x_inference)
-    return x_inference, y_pred
+    x_inference_sorted = torch.FloatTensor(np.sort(x_inference.numpy(), axis=0))
+    y_pred = inference(model, x_inference_sorted)
+    return x_inference_sorted, y_pred

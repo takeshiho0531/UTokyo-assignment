@@ -7,6 +7,9 @@ import yaml
 from inference import inference_wrapper
 from train import train_wrapper
 
+seed = 42
+torch.manual_seed(seed)
+
 
 def main(config_file_path: str):
     with open(config_file_path) as file:
@@ -35,7 +38,7 @@ def main(config_file_path: str):
     plt.savefig(config["loss_graph_path"])
 
     # inference
-    x_inference, y_pred = inference_wrapper(
+    x_inference_sorted, y_pred = inference_wrapper(
         inf_N=config["inf_N"],
         x_range_from=config["x_range_from"],
         x_range_to=config["x_range_to"],
@@ -49,13 +52,12 @@ def main(config_file_path: str):
         y = 5 * x * torch.sin(2 * np.pi * x) + 4 * torch.exp(1 / (x + 1)) + epsilon
         return y
 
-    x_inference_sorted = torch.FloatTensor(np.sort(x_inference.numpy(), axis=0))
     y_true = generate_true_data(x_inference_sorted, epsilon=config["epsilon"])
 
     # inference graph
     plt.figure(figsize=(8, 6))
     plt.plot(
-        x_inference.numpy(),
+        x_inference_sorted.numpy(),
         y_pred,
         label="predicted",
         marker="o",
