@@ -22,8 +22,13 @@ def inference_wrapper(
     weight_path: str,
     hidden_layer1: int,
     hidden_layer2: int,
+    dropout_ratio: float,
 ) -> Tuple[torch.Tensor, np.ndarray]:
-    model = RegressionModel(hidden_layer1=hidden_layer1, hidden_layer2=hidden_layer2)
+    model = RegressionModel(
+        hidden_layer1=hidden_layer1,
+        hidden_layer2=hidden_layer2,
+        dropout_ratio=dropout_ratio,
+    )
     model.load_state_dict(torch.load(weight_path))
 
     x_inference = (

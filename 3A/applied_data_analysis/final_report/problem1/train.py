@@ -34,7 +34,7 @@ def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, 
         print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
         loss_list.append(loss.item())
 
-        torch.save(model.state_dict(), save_path)
+    torch.save(model.state_dict(), save_path)
     return loss_list
 
 
@@ -64,17 +64,3 @@ def train_wrapper(
         lr=lr,
     )
     return loss_list
-
-
-if __name__ == "__main__":
-    train_wrapper(
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
-        sys.argv[4],
-        sys.argv[5],
-        sys.argv[6],
-        sys.argv[7],
-        sys.argv[8],
-        sys.argv[9],
-    )

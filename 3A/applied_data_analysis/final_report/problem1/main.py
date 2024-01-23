@@ -42,13 +42,15 @@ def main(config_file_path: str):
         weight_path=config["weight_path"],
         hidden_layer1=config["hidden_layer1"],
         hidden_layer2=config["hidden_layer2"],
+        dropout_ratio=config["dropout_ratio"],
     )
 
     def generate_true_data(x: torch.Tensor, epsilon: float) -> torch.Tensor:
         y = 5 * x * torch.sin(2 * np.pi * x) + 4 * torch.exp(1 / (x + 1)) + epsilon
         return y
 
-    y_true = generate_true_data(x_inference, epsilon=config["epsilon"])
+    x_inference_sorted = torch.FloatTensor(np.sort(x_inference.numpy(), axis=0))
+    y_true = generate_true_data(x_inference_sorted, epsilon=config["epsilon"])
 
     # inference graph
     plt.figure(figsize=(8, 6))
@@ -61,7 +63,7 @@ def main(config_file_path: str):
         color="r",
     )
     plt.plot(
-        x_inference.numpy(),
+        x_inference_sorted.numpy(),
         y_true.numpy(),
         label="true",
         marker="s",
@@ -73,7 +75,7 @@ def main(config_file_path: str):
     plt.title("Overlayed Data (predicted & true)")
     plt.legend()
     plt.grid(True)
-    plt.show(config["inference_result_graph_path"])
+    plt.savefig(config["inference_result_graph_path"])
 
 
 if __name__ == "__main__":
