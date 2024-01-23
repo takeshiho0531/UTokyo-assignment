@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,7 +22,7 @@ def inference_wrapper(
     weight_path: str,
     hidden_layer1: int,
     hidden_layer2: int,
-) -> np.ndarray:
+) -> Tuple[torch.Tensor, np.ndarray]:
     model = RegressionModel(hidden_layer1=hidden_layer1, hidden_layer2=hidden_layer2)
     model.load_state_dict(torch.load(weight_path))
 
@@ -28,4 +30,4 @@ def inference_wrapper(
         torch.FloatTensor(inf_N).uniform_(x_range_from, x_range_to).unsqueeze(1)
     )
     y_pred = inference(model, x_inference)
-    return y_pred
+    return x_inference, y_pred
