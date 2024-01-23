@@ -7,13 +7,14 @@ import torch.optim as optim
 from DNN import RegressionModel
 
 
-def generate_data(N, epsilon, x_range=(0, 100)):
-    x = torch.FloatTensor(N).uniform_(x_range).unsqueeze(1)
+def generate_data(N, epsilon, x_range_from=0, x_range_to=1):
+    x = torch.FloatTensor(N).uniform_(x_range_from, x_range_to).unsqueeze(1)
     y = 5 * x * torch.sin(2 * np.pi * x) + 4 * torch.exp(1 / (x + 1)) + epsilon
     return x, y
 
 
 def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
+    result = []
     model = RegressionModel(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
@@ -29,22 +30,26 @@ def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
         loss.backward()
         optimizer.step()
 
-        if (epoch + 1) % 100 == 0:
-            print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+        result.append(loss.item())
+    return result
 
 
 def main(
     N: int,
     epsilon: float,
-    x_range,
+    x_range_from: float,
+    x_range_to: float,
     epochs: int,
     hidden_layer1: int,
     hidden_layer2: int,
     dropout_ratio: float,
     lr: float,
 ):
-    x, y = generate_data(N=N, epsilon=epsilon, x_range=x_range)
-    train(
+    x, y = generate_data(
+        N=N, epsilon=epsilon, x_range_from=x_range_from, x_range_to=x_range_to
+    )
+    return train(
         x=x,
         y=y,
         epochs=epochs,
@@ -65,4 +70,5 @@ if __name__ == "__main__":
         sys.argv[6],
         sys.argv[7],
         sys.argv[8],
+        sys.argv[9],
     )
