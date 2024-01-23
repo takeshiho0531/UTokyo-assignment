@@ -1,4 +1,5 @@
 import sys
+from typing import List
 
 import numpy as np
 import torch
@@ -14,7 +15,7 @@ def generate_data(N, epsilon, x_range_from=0, x_range_to=1):
 
 
 def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
-    result = []
+    loss_list = []
     model = RegressionModel(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
@@ -31,13 +32,13 @@ def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, 
         optimizer.step()
 
         print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
-        result.append(loss.item())
+        loss_list.append(loss.item())
 
         torch.save(model.state_dict(), save_path)
-    return result
+    return loss_list
 
 
-def main(
+def train_wrapper(
     N: int,
     epsilon: float,
     x_range_from: float,
@@ -48,11 +49,11 @@ def main(
     hidden_layer2: int,
     dropout_ratio: float,
     lr: float,
-):
+) -> List[float]:
     x, y = generate_data(
         N=N, epsilon=epsilon, x_range_from=x_range_from, x_range_to=x_range_to
     )
-    return train(
+    loss_list = train(
         x=x,
         y=y,
         save_path=save_path,
@@ -62,10 +63,11 @@ def main(
         dropout_ratio=dropout_ratio,
         lr=lr,
     )
+    return loss_list
 
 
 if __name__ == "__main__":
-    main(
+    train_wrapper(
         sys.argv[1],
         sys.argv[2],
         sys.argv[3],

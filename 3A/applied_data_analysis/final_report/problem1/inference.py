@@ -13,7 +13,7 @@ def inference(model: nn.Module, x_inference: torch.Tensor) -> np.ndarray:
     return y_pred.numpy()
 
 
-def main(
+def inference_wrapper(
     inf_N: int,
     x_range_from: float,
     x_range_to: float,
