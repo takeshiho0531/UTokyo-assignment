@@ -17,13 +17,15 @@ def main(
     inf_N: int,
     x_range_from: float,
     x_range_to: float,
+    weight_path: str,
     hidden_layer1: int,
     hidden_layer2: int,
 ) -> np.ndarray:
     model = RegressionModel(hidden_layer1=hidden_layer1, hidden_layer2=hidden_layer2)
+    model.load_state_dict(torch.load(weight_path))
 
     x_inference = (
         torch.FloatTensor(inf_N).uniform_(x_range_from, x_range_to).unsqueeze(1)
     )
-    predicted_value = inference(model, x_inference)
-    return predicted_value
+    y_pred = inference(model, x_inference)
+    return y_pred

@@ -13,7 +13,7 @@ def generate_data(N, epsilon, x_range_from=0, x_range_to=1):
     return x, y
 
 
-def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
+def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
     result = []
     model = RegressionModel(
         hidden_layer1=hidden_layer1,
@@ -32,6 +32,8 @@ def train(x, y, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
 
         print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
         result.append(loss.item())
+
+        torch.save(model.state_dict(), save_path)
     return result
 
 
@@ -40,6 +42,7 @@ def main(
     epsilon: float,
     x_range_from: float,
     x_range_to: float,
+    save_path: str,
     epochs: int,
     hidden_layer1: int,
     hidden_layer2: int,
@@ -52,6 +55,7 @@ def main(
     return train(
         x=x,
         y=y,
+        save_path=save_path,
         epochs=epochs,
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
