@@ -4,14 +4,22 @@ N: 1000
 epsilon: 0.01
 x_range_from: 0
 x_range_to: 1
-weight_path: "./final_report/problem1/weight/weight1_1.pth"  # edit this!
+weight_path: "./final_report/problem1/weight/weight2_3.pth"  # edit this!
 epochs: 10
 hidden_layer1: 64
 hidden_layer2: 64
+hidden_layer3: 64
+hidden_layer4: 64
+hidden_layer5: 64
+hidden_layer6: 64
+hidden_layer7: 64
+hidden_layer8: 64
+hidden_layer9: 64
+hidden_layer10: 64
 dropout_ratio: 0.3
 lr: 0.001
-loss_graph_path: "./final_report/problem1/result/loss_plot1_1.png"  # edit this!
+loss_graph_path: "./final_report/problem1/result/loss_plot2_3.png"  # edit this!
 
 # inference
 inf_N: 100
-inference_result_graph_path: "./final_report/problem1/result/inference_result_plot1_1.png"  # edit this!
+inference_result_graph_path: "./final_report/problem1/result/inference_result_plot2_3.png"  # edit this!
