@@ -1,8 +1,10 @@
 # train
+deeper_model: False
 N: 10
 epsilon: 0.01
 x_range_from: 0
 x_range_to: 1
+val_split: 0.2
 weight_path: "./final_report/problem1/weight/weight3_2.pth"  # edit this!
 epochs: 10
 hidden_layer1: 1024
