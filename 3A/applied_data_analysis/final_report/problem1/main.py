@@ -17,11 +17,12 @@ def main(config_file_path: str):
 
     # train
     if config["deeper_model"]:
-        loss_list = train_deeper_model_wrapper(
+        train_loss_list, val_loss_list = train_deeper_model_wrapper(
             N=config["N"],
             epsilon=config["epsilon"],
             x_range_from=config["x_range_from"],
             x_range_to=config["x_range_to"],
+            val_split=config["val_split"],
             save_path=config["weight_path"],
             epochs=config["epochs"],
             hidden_layer1=config["hidden_layer1"],
@@ -38,11 +39,12 @@ def main(config_file_path: str):
             lr=config["lr"],
         )
     else:
-        loss_list = train_wrapper(
+        train_loss_list, val_loss_list = train_wrapper(
             N=config["N"],
             epsilon=config["epsilon"],
             x_range_from=config["x_range_from"],
             x_range_to=config["x_range_to"],
+            val_split=config["val_split"],
             save_path=config["weight_path"],
             epochs=config["epochs"],
             hidden_layer1=config["hidden_layer1"],
@@ -52,11 +54,13 @@ def main(config_file_path: str):
         )
 
     # loss graph
-    plt.plot(loss_list)
+    plt.plot(train_loss_list, label="train loss")
+    plt.plot(val_loss_list, label="validation loss")
     plt.xlabel("epoch")
     plt.ylabel("Loss")
     plt.title("Changes in Loss")
     plt.grid(True)
+    plt.legend()
     plt.savefig(config["loss_graph_path"])
 
     # inference

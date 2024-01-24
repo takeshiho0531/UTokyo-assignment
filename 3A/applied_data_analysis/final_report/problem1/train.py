@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from DNN import RegressionDeeperModel, RegressionModel
+from torch.utils.data import DataLoader, TensorDataset
 
 
 def generate_data(N, epsilon, x_range_from=0, x_range_to=1):
@@ -14,8 +15,25 @@ def generate_data(N, epsilon, x_range_from=0, x_range_to=1):
     return x, y
 
 
-def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr):
-    loss_list = []
+def train(
+    x, y, val_split, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, lr
+):
+    total_size = len(x)
+    val_size = int(val_split * total_size)
+    train_size = total_size - val_size
+
+    x_train, y_train = x[:train_size], y[:train_size]
+    x_val, y_val = x[train_size:], y[train_size:]
+
+    train_dataset = TensorDataset(x_train, y_train)
+    val_dataset = TensorDataset(x_val, y_val)
+
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+
+    train_loss_list = []
+    val_loss_list = []
+
     model = RegressionModel(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
@@ -25,22 +43,39 @@ def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, 
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     for epoch in range(epochs):
-        optimizer.zero_grad()
-        outputs = model(x)
-        loss = criterion(outputs, y)
-        loss.backward()
-        optimizer.step()
+        model.train()
+        train_loss = 0.0
+        for inputs, labels in train_loader:
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
 
-        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
-        loss_list.append(loss.item())
+        train_loss /= len(train_loader)
+        train_loss_list.append(train_loss)
+
+        model.eval()
+        val_loss = 0.0
+        with torch.no_grad():
+            for inputs, labels in val_loader:
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                val_loss += loss.item()
+        val_loss /= len(val_loader)
+        val_loss_list.append(val_loss)
+
+        print(f"Epoch [{epoch+1}/{epochs}], train loss: {train_loss:.4f}, val loss: {val_loss:.4f}")
 
     torch.save(model.state_dict(), save_path)
-    return loss_list
+    return train_loss_list, val_loss_list
 
 
 def train_deeper_model(
     x,
     y,
+    val_split,
     save_path,
     epochs,
     hidden_layer1,
@@ -56,7 +91,22 @@ def train_deeper_model(
     dropout_ratio,
     lr,
 ):
-    loss_list = []
+    total_size = len(x)
+    val_size = int(val_split * total_size)
+    train_size = total_size - val_size
+
+    x_train, y_train = x[:train_size], y[:train_size]
+    x_val, y_val = x[train_size:], y[train_size:]
+
+    train_dataset = TensorDataset(x_train, y_train)
+    val_dataset = TensorDataset(x_val, y_val)
+
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+
+    train_loss_list = []
+    val_loss_list = []
+
     model = RegressionDeeperModel(
         hidden_layer1=hidden_layer1,
         hidden_layer2=hidden_layer2,
@@ -74,17 +124,33 @@ def train_deeper_model(
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     for epoch in range(epochs):
-        optimizer.zero_grad()
-        outputs = model(x)
-        loss = criterion(outputs, y)
-        loss.backward()
-        optimizer.step()
+        model.train()
+        train_loss = 0.0
+        for inputs, labels in train_loader:
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
 
-        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
-        loss_list.append(loss.item())
+        train_loss /= len(train_loader)
+        train_loss_list.append(train_loss)
+
+        model.eval()
+        val_loss = 0.0
+        with torch.no_grad():
+            for inputs, labels in val_loader:
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                val_loss += loss.item()
+        val_loss /= len(val_loader)
+        val_loss_list.append(val_loss)
+
+        print(f"Epoch [{epoch+1}/{epochs}], train loss: {train_loss:.4f}, val loss: {val_loss:.4f}")
 
     torch.save(model.state_dict(), save_path)
-    return loss_list
+    return train_loss_list, val_loss_list
 
 
 def train_wrapper(
@@ -92,6 +158,7 @@ def train_wrapper(
     epsilon: float,
     x_range_from: float,
     x_range_to: float,
+    val_split: float,
     save_path: str,
     epochs: int,
     hidden_layer1: int,
@@ -102,9 +169,10 @@ def train_wrapper(
     x, y = generate_data(
         N=N, epsilon=epsilon, x_range_from=x_range_from, x_range_to=x_range_to
     )
-    loss_list = train(
+    train_loss_list, val_loss_list = train(
         x=x,
         y=y,
+        val_split=val_split,
         save_path=save_path,
         epochs=epochs,
         hidden_layer1=hidden_layer1,
@@ -112,7 +180,7 @@ def train_wrapper(
         dropout_ratio=dropout_ratio,
         lr=lr,
     )
-    return loss_list
+    return train_loss_list, val_loss_list
 
 
 def train_deeper_model_wrapper(
@@ -120,6 +188,7 @@ def train_deeper_model_wrapper(
     epsilon: float,
     x_range_from: float,
     x_range_to: float,
+    val_split: float,
     save_path: str,
     epochs: int,
     hidden_layer1: int,
@@ -138,9 +207,10 @@ def train_deeper_model_wrapper(
     x, y = generate_data(
         N=N, epsilon=epsilon, x_range_from=x_range_from, x_range_to=x_range_to
     )
-    loss_list = train_deeper_model(
+    train_loss_list, val_loss_list = train_deeper_model(
         x=x,
         y=y,
+        val_split=val_split,
         save_path=save_path,
         epochs=epochs,
         hidden_layer1=hidden_layer1,
@@ -156,4 +226,4 @@ def train_deeper_model_wrapper(
         dropout_ratio=dropout_ratio,
         lr=lr,
     )
-    return loss_list
+    return train_loss_list, val_loss_list
