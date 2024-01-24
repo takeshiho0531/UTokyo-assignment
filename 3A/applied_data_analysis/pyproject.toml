@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "applied-data-analysis"
+version = "0.1.0"
+description = ""
+authors = ["Akiho Kawada <kawadatakeshiho@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.3"
+torch = "^2.1.2"
+matplotlib = "^3.8.2"
+seaborn = "^0.13.1"
+pandas = "^2.2.0"
+scikit-learn = "^1.4.0"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

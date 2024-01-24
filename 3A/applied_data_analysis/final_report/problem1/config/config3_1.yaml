@@ -1,0 +1,18 @@
+# train
+deeper_model: False
+N: 10
+epsilon: 1
+x_range_from: 0
+x_range_to: 1
+val_split: 0.2
+weight_path: "./final_report/problem1/weight/weight3_1.pth"  # edit this!
+epochs: 10
+hidden_layer1: 64
+hidden_layer2: 64
+dropout_ratio: 0.3
+lr: 0.001
+loss_graph_path: "./final_report/problem1/result/loss_plot3_1.png"  # edit this!
+
+# inference
+inf_N: 100
+inference_result_graph_path: "./final_report/problem1/result/inference_result_plot3_1.png"  # edit this!
