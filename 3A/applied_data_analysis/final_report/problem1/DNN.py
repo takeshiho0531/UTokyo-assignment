@@ -33,7 +33,7 @@ class RegressionDeeperModel(nn.Module):
         hidden_layer10,
         dropout_ratio,
     ):
-        super(RegressionModel, self).__init__()
+        super(RegressionDeeperModel, self).__init__()
         self.fc1 = nn.Linear(1, hidden_layer1)
         self.dropout1 = nn.Dropout(dropout_ratio)
         self.fc2 = nn.Linear(hidden_layer1, hidden_layer2)

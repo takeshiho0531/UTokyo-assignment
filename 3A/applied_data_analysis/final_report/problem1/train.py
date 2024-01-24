@@ -38,6 +38,55 @@ def train(x, y, save_path, epochs, hidden_layer1, hidden_layer2, dropout_ratio, 
     return loss_list
 
 
+def train_deeper_model(
+    x,
+    y,
+    save_path,
+    epochs,
+    hidden_layer1,
+    hidden_layer2,
+    hidden_layer3,
+    hidden_layer4,
+    hidden_layer5,
+    hidden_layer6,
+    hidden_layer7,
+    hidden_layer8,
+    hidden_layer9,
+    hidden_layer10,
+    dropout_ratio,
+    lr,
+):
+    loss_list = []
+    model = RegressionDeeperModel(
+        hidden_layer1=hidden_layer1,
+        hidden_layer2=hidden_layer2,
+        hidden_layer3=hidden_layer3,
+        hidden_layer4=hidden_layer4,
+        hidden_layer5=hidden_layer5,
+        hidden_layer6=hidden_layer6,
+        hidden_layer7=hidden_layer7,
+        hidden_layer8=hidden_layer8,
+        hidden_layer9=hidden_layer9,
+        hidden_layer10=hidden_layer10,
+        dropout_ratio=dropout_ratio,
+    )
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    for epoch in range(epochs):
+        optimizer.zero_grad()
+        outputs = model(x)
+        loss = criterion(outputs, y)
+        loss.backward()
+        optimizer.step()
+
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+        loss_list.append(loss.item())
+
+    torch.save(model.state_dict(), save_path)
+    return loss_list
+
+
 def train_wrapper(
     N: int,
     epsilon: float,
@@ -89,7 +138,7 @@ def train_deeper_model_wrapper(
     x, y = generate_data(
         N=N, epsilon=epsilon, x_range_from=x_range_from, x_range_to=x_range_to
     )
-    loss_list = train(
+    loss_list = train_deeper_model(
         x=x,
         y=y,
         save_path=save_path,
