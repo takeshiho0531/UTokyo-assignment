@@ -59,5 +59,13 @@ class RegressionDeeperModel(nn.Module):
     def forward(self, x):
         x = self.dropout1(F.relu(self.fc1(x)))
         x = self.dropout2(F.relu(self.fc2(x)))
-        x = self.fc3(x)
+        x = self.dropout3(F.relu(self.fc3(x)))
+        x = self.dropout4(F.relu(self.fc4(x)))
+        x = self.dropout5(F.relu(self.fc5(x)))
+        x = self.dropout6(F.relu(self.fc6(x)))
+        x = self.dropout7(F.relu(self.fc7(x)))
+        x = self.dropout8(F.relu(self.fc8(x)))
+        x = self.dropout9(F.relu(self.fc9(x)))
+        x = self.dropout10(F.relu(self.fc10(x)))
+        x = self.fc11(x)
         return x
