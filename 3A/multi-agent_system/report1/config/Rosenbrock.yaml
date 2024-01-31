@@ -1,0 +1,6 @@
+dim: 2
+sample_num: 100
+low: -5.0
+high: 5.0
+step_num: 500
+test_function: "Rosenbrock"
