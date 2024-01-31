@@ -1,0 +1,6 @@
+dim: 2
+sample_num: 12000
+low: -600
+high: 600
+step_num: 500
+test_function: "Griewank"
