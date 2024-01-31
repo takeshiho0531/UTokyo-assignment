@@ -1,3 +1,5 @@
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
@@ -50,10 +52,14 @@ def main(config_file_path: str):
     plt.xlabel("step")
     plt.ylabel("log(diff)")
     plt.title(
-        f"dim={dim}, sample_num={sample_num}, low={low}, high={high}, test_function={test_function.__name__}"
+        f"dim={dim}, sample_num={sample_num}, test_function={test_function.__name__}"
     )
     plt.legend()
     plt.savefig(
-        f"3A/multi-agent_system/report1/result/{test_function.__name__}_N_{dim}_{low}_{high}.png"
+        f"./result/{test_function.__name__}_N_{dim}.png"
     )
     print("--------------------")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])

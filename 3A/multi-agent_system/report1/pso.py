@@ -22,7 +22,7 @@ def update_velosity(
     r2 = random.uniform(0, 1)
     updated_v = (
         w * v
-        + c1 * r1(personal_best_position - x)
+        + c1 * r1 * (personal_best_position - x)
         + c2 * r2 * (global_best_position - x)
     )
     return updated_v
@@ -36,7 +36,7 @@ def pso(
     # initialize
     num = len(initial)
     position_list = initial
-    velosity_list = np.zeros(initial.shape)
+    velosity_list = np.zeros((len(initial), len(initial[0])))
     personal_best_position_list = list(position_list)
     personal_best_score_list = [criterion(p) for p in position_list]
     best_particle_idx = np.argmin(personal_best_score_list)
@@ -65,9 +65,6 @@ def pso(
 
         best_particle_idx = np.argmin(personal_best_score_list)
         global_best_position = personal_best_position_list[best_particle_idx]
-
-        print(global_best_position)
-        print(min(personal_best_score_list))
 
         result[t] = {
             "global_best_position": global_best_position,
