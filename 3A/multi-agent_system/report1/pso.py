@@ -28,20 +28,21 @@ def update_velosity(
     return updated_v
 
 
-def main(
-    num: int,
+def pso(
     step_num: int,
     initial: List[np.ndarray],  # 各要素にその点の全次元位置情報が含まれる
     criterion,
-):
+) -> dict:
     # initialize
-    assert len(initial) == num
+    num = len(initial)
     position_list = initial
     velosity_list = np.zeros(initial.shape)
     personal_best_position_list = list(position_list)
-    personal_best_score_list = [criterion(position_list) for p in position_list]
+    personal_best_score_list = [criterion(p) for p in position_list]
     best_particle_idx = np.argmin(personal_best_score_list)
     global_best_position = personal_best_position_list[best_particle_idx]
+
+    result = {}
 
     for t in range(step_num):
         for i in range(num):
@@ -68,6 +69,9 @@ def main(
         print(global_best_position)
         print(min(personal_best_score_list))
 
+        result[t] = {
+            "global_best_position": global_best_position,
+            "global_best_score": min(personal_best_score_list),
+        }
 
-if __name__ == "__main__":
-    main()
+    return result
